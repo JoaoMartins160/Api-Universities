@@ -2,12 +2,15 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser');
 
 const app = express()
 
 app.use(express.json())
 
 const User = require('./src/models/User')
+
+app.use(cookieParser());
 
 app.get("/users/:id", checkToken, async (req,res) => {
     const id = req.params.id
@@ -31,10 +34,9 @@ function checkToken (req,res,next) {
     }
 
     try {
-        const secret = Process.env.SECRET
-
-        jwt.verify(token, secret)
-
+        
+        const acesssecret = process.env.ACCESS_TOKEN_SECRET
+        jwt.verify(token, acesssecret)
         next()
 
     } catch (error) {
@@ -42,12 +44,13 @@ function checkToken (req,res,next) {
     }
 }
 
-app.use('/auth/register', require('./src/routes/register'));
+app.use('/refresh', require('./src/routes/refresh'));
 
+app.use('/auth/register', require('./src/routes/register'));
 
 app.use('/auth/login', require('./src/routes/auth'));
 
-
+app.use('/logout', require('./src/routes/logout'));
 
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS

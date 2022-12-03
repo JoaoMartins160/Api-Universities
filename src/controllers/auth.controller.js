@@ -27,13 +27,20 @@ const handleLogin = async (req,res) => {
     }
 
     try {
-    const secret = process.env.SECRET
-    const token = jwt.sign({
+    const refreshsecret = process.env.REFRESH_TOKEN_SECRET
+0
+    const refreshToken = jwt.sign({
         id: user._id
-    }, secret,
-    )
+    }, refreshsecret)
+    const accessToken = generateAcessToken({user: user._id})
 
-    res.status(200).json({msg: 'Autenticação realizada com sucesso', token})
+    user.refreshToken = refreshToken;
+    const result = await user.save();
+    console.log(result);
+
+    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+    
+    res.status(200).json({msg: 'Autenticação realizada com sucesso',accessToken: accessToken, refreshToken: refreshToken})
 
     }  catch (error) {
         console.log(error)
@@ -41,5 +48,11 @@ const handleLogin = async (req,res) => {
         res.status(500).json({error})
     }
 }
+
+function generateAcessToken(user){
+    const acesssecret = process.env.ACCESS_TOKEN_SECRET 
+    return jwt.sign(user, acesssecret,{ expiresIn: '1m'} )
+}
+
 
 module.exports = { handleLogin };
