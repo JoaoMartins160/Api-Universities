@@ -5,7 +5,11 @@ const universitiesController = require('../../controllers/universities.controlle
 router.route('/')
     .post(universitiesController.createNewuniversity)
     .put(universitiesController.updateUniversities)
-    .delete(universitiesController.deleteUniversities);
+    .delete(universitiesController.deleteUniversities)
+    .get(universitiesController.getbynameUniversities);
+
+router.route('/country')
+    .get(universitiesController.getbycountryUniversities);
 
 router.route('/:id')
     .get(universitiesController.getUniversities);

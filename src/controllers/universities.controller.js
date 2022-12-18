@@ -71,9 +71,34 @@ const getUniversities = async (req, res) => {
     res.json(universities);
 }
 
+const getbynameUniversities = async (req, res) => {
+    const name = req.query.name
+    if (!name) return res.status(400).json({ msg: 'O Nome é necessario!' });
+
+    const universities = await Universities.find({ name: name });
+    if (!universities) {
+        return res.status(204).json({ "message": `Não existe universidade com este Nome.` });
+    }
+    res.json(universities);
+}
+
+const getbycountryUniversities = async (req, res) => {
+    const country = req.query.country
+    if (!country) return res.status(400).json({ msg: 'O País é necessario!' });
+
+    const universities = await Universities.find({ country: country }).exec();
+    if (!universities) {
+        return res.status(204).json({ "message": `Não existe universidade nestre País ${country}.` });
+    }
+    res.json(universities);
+}
+
+
 module.exports = {
     createNewuniversity,
     updateUniversities,
     deleteUniversities,
-    getUniversities
+    getUniversities,
+    getbynameUniversities,
+    getbycountryUniversities
 }

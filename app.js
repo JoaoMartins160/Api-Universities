@@ -30,7 +30,7 @@ function checkToken (req,res,next) {
     const token = authHeader && authHeader.split(" ")[1]
 
     if(!token) {
-        return res.status(401).json({msg: 'Acesso negado!'})
+        return res.status(401).json({msg: 'Usuario não Logado!'})
     }
 
     try {
@@ -52,7 +52,7 @@ app.use('/auth/login', require('./src/routes/auth'));
 
 app.use('/logout', require('./src/routes/logout'));
 
-app.use('/universities', require('./src/routes/api/universities'));
+app.use('/universities',checkToken, require('./src/routes/api/universities'));
 
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS

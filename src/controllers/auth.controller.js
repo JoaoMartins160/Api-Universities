@@ -51,7 +51,7 @@ const handleLogin = async (req,res) => {
 
 function generateAcessToken(user){
     const acesssecret = process.env.ACCESS_TOKEN_SECRET 
-    return jwt.sign(user, acesssecret,{ expiresIn: '1m'} )
+    return jwt.sign(user, acesssecret,{ expiresIn: '10m'} )
 }
 
 
